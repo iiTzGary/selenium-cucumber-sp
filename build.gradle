@@ -1,0 +1,71 @@
+
+plugins {
+    id "net.serenity-bdd.serenity-gradle-plugin" version "4.1.12"
+    id 'java'
+    id 'eclipse'
+    id 'idea'
+}
+
+defaultTasks 'clean','test','aggregate'
+
+
+repositories {
+    mavenCentral()
+}
+
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+
+
+
+
+ext {
+    slf4jVersion = '2.0.9'
+    serenityCoreVersion = '4.2.16'
+    junitVersion = '5.11.4'
+    assertJVersion = '3.23.1'
+    lombokVersion = '1.18.24'
+    logbackVersion = '1.2.11'
+    cucumberVersion = '7.17.0'
+}
+
+dependencies {
+    implementation "net.serenity-bdd:serenity-core:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay:${serenityCoreVersion}"
+    implementation "net.serenity-bdd:serenity-screenplay-webdriver:${serenityCoreVersion}"
+
+    // Cucumber Integration with Serenity
+    implementation "net.serenity-bdd:serenity-cucumber:${serenityCoreVersion}"
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
+
+    // JUnit 5 Support
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testImplementation("org.junit.jupiter:junit-jupiter:${junitVersion}")
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.9.2'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.9.2'
+    testImplementation 'net.java.dev.jna:jna:5.12.1'
+
+    // Selenium WebDriver
+    implementation 'org.seleniumhq.selenium:selenium-java:4.30.0'
+
+    // Logging
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+
+    // Assertions
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+}
+
+gradle.startParameter.continueOnFailure = true
+
+test.finalizedBy(aggregate)
